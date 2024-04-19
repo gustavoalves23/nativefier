@@ -254,7 +254,11 @@ function setupScreenSharePicker(
           })
           .catch((err) => {
             log.error('Error selecting desktop capture source:', err);
-            reject(err);
+            const exception = new DOMException(
+              'Permission denied',
+              'NotAllowedError',
+            );
+            reject(exception);
           })
           .finally(() => {
             clearElements();

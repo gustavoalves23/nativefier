@@ -2,6 +2,7 @@ const base = require('../base-eslintrc');
 
 // # https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/README.md
 module.exports = {
+  root: true,
   parser: base.parser,
   parserOptions: {
     tsconfigRootDir: __dirname,
