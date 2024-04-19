@@ -184,7 +184,7 @@ describe('Application launch', () => {
       true,
     )) as Page;
     const [dialogPromise] = (await once(
-      mainWindow,
+      mainWindow as unknown as NodeJS.EventEmitter,
       'dialog',
     )) as unknown as Promise<Dialog>[];
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
