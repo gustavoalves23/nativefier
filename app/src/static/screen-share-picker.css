@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #030637;
+  color: #FFF;
+  font-family: 'Roboto', sans-serif;
+  padding: 1rem;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#fullscreen-container {
+  display: flex;
+}
+
+.source-container {
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.source-thumbnail {
+  width: 90%;
+  margin: auto;
+
+}

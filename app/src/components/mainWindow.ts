@@ -7,6 +7,8 @@ import {
   BrowserWindow,
   Event,
   HandlerDetails,
+  dialog,
+  DesktopCapturerSource,
 } from 'electron';
 import windowStateKeeper from 'electron-window-state';
 
@@ -239,7 +241,53 @@ function setupSessionPermissionHandler(window: BrowserWindow): void {
   ipcMain.handle('desktop-capturer-get-sources', () => {
     return desktopCapturer.getSources({
       types: ['screen', 'window'],
+      thumbnailSize: {
+        width: 150,
+        height: 150,
+      },
     });
+  });
+
+  ipcMain.handle('desktop-capturer-open-picker', async () => {
+    const pickerScreen = new BrowserWindow({
+      width: 800,
+      height: 600,
+      frame: false,
+      webPreferences: {
+        nodeIntegration: true, // Enable Node.js integration
+        contextIsolation: false, // Disable context isolation
+      },
+    });
+
+    await pickerScreen.loadURL(
+      'file://' + __dirname + '/static/screen-share-picker.html',
+    );
+
+    pickerScreen.show();
+
+    const source = await new Promise<DesktopCapturerSource>(
+      (resolve, reject) => {
+        const handleSuccess = (
+          _: unknown,
+          source: DesktopCapturerSource,
+        ): void => {
+          pickerScreen.close();
+          pickerScreen.removeAllListeners('closed');
+          resolve(source);
+        };
+
+        const handleError = (): void => {
+          reject(new Error('User closed screen picker'));
+          ipcMain.removeHandler('start-screen-share');
+        };
+
+        pickerScreen.once('closed', handleError);
+
+        ipcMain.handleOnce('start-screen-share', handleSuccess);
+      },
+    );
+
+    return source;
   });
 }
 

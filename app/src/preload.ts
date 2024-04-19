@@ -275,21 +275,19 @@ function setDisplayMediaPromise(): void {
   window.navigator.mediaDevices.getDisplayMedia = (): Promise<MediaStream> => {
     return new Promise((resolve, reject) => {
       const sources = ipcRenderer.invoke(
-        'desktop-capturer-get-sources',
-      ) as Promise<Electron.DesktopCapturerSource[]>;
+        'desktop-capturer-open-picker',
+      ) as Promise<Electron.DesktopCapturerSource>;
       sources
-        .then(async (sources) => {
-          if (isWayland()) {
-            // No documentation is provided wether the first element is always PipeWire-picked or not
-            // i.e. maybe it's not deterministic, we are only taking a guess here.
-            const stream = await getDisplayMedia(sources[0].id);
-            resolve(stream);
-          } else {
-            setupScreenSharePicker(resolve, reject, sources);
+        .then(async (source) => {
+          if (!source) {
+            reject(new DOMException('', 'AbortError'));
+            return;
           }
+          const stream = await getDisplayMedia(source.id);
+          resolve(stream);
         })
-        .catch((err) => {
-          reject(err);
+        .catch(() => {
+          reject(new DOMException('', 'AbortError'));
         });
     });
   };
