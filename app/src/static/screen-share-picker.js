@@ -11,36 +11,44 @@ const log = console.log;
 const run = async () => {
   const fullScreenContainer = document.getElementById('fullscreen-container');
 
-  const fullScreenButton = document.getElementById('full-screen-button');
+  const windowsContainer = document.getElementById('windows-container');
 
-  const sources = await ipcRenderer.invoke('desktop-capturer-get-sources');
+  const sources = ( await ipcRenderer.invoke('desktop-capturer-get-sources') ).filter((item) => !item.name.includes("nativefier"))
 
   console.log(sources);
 
-  // const entireScreenSources = sources.filter(source => source.id.includes('screen'));
+  const entireScreenSources = sources.filter(source => source.id.includes('screen'));
   //
-  // const windowSources = sources.filter(source => source.id.includes('window'));
+  const windowSources = sources.filter(source => source.id.includes('window'));
 
-  sources.forEach((source, index) => {
+  entireScreenSources.forEach((source, index) => {
     const container = document.createElement('div');
     container.classList.add('source-container');
     container.innerHTML = `
-    <h3>Screen ${index + 1}</h3>
-      <img class="source-thumbnail" src="${source.thumbnail.toDataURL({
-        scaleFactor: 100,
-      })}" />
+      <h2>Screen ${index + 1}</h2>
+      <img class="source-thumbnail" src="${source.thumbnail.toDataURL()}" />
     `;
 
-    const button = document.createElement('button');
-
-    button.innerText = 'Start Screen Share';
-
-    button.onclick = async () => {
+    container.onclick = async () => {
       await ipcRenderer.invoke('start-screen-share', source);
     };
 
-    container.appendChild(button);
     fullScreenContainer.appendChild(container);
+  });
+
+  windowSources.forEach((source) => {
+    const container = document.createElement('div');
+    container.classList.add('source-container');
+    container.innerHTML = `
+      <h2>${source.name}</h2>
+      <img class="source-thumbnail" src="${source.thumbnail.toDataURL()}" />
+    `;
+
+    container.onclick = async () => {
+      await ipcRenderer.invoke('start-screen-share', source);
+    };
+
+    windowsContainer.appendChild(container);
   });
 };
 

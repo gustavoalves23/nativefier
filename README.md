@@ -1,4 +1,10 @@
-Note: Nativefier is unmaintained, please see https://github.com/nativefier/nativefier/issues/1577.
+## Disclaimer
+
+This is a fork of the original [nativefier/nativefier](https://github.com/nativefier/nativefier) project with some tweaks to suit my needs. Especilly related to screen share capabilities on Microsoft Teams and Gather Town.
+
+Tweaks:
+- Refactor of screen selection to allow screen share on websites with restrict code injection policies. (ie. Microsoft Teams).
+- Change on the way the screen share rejection is handled, to behave the same way as Google Chrome does. Fixing some bugs with Gather Town.
 
 # Nativefier
 

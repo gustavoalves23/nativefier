@@ -252,10 +252,9 @@ function setupSessionPermissionHandler(window: BrowserWindow): void {
     const pickerScreen = new BrowserWindow({
       width: 800,
       height: 600,
-      frame: false,
       webPreferences: {
-        nodeIntegration: true, // Enable Node.js integration
-        contextIsolation: false, // Disable context isolation
+        nodeIntegration: true,
+        contextIsolation: false,
       },
     });
 

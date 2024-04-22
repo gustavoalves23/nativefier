@@ -1,6 +1,6 @@
 {
-  "name": "nativefier",
-  "version": "52.0.0",
+  "name": "gmiyazaki-nativefier",
+  "version": "52.0.3",
   "description": "Wrap web apps natively",
   "license": "MIT",
   "author": "Goh Jia Hao",
@@ -22,10 +22,10 @@
   "bin": {
     "nativefier": "lib/cli.js"
   },
-  "homepage": "https://github.com/nativefier/nativefier",
+  "homepage": "https://github.com/gustavoalves23/nativefier",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nativefier/nativefier.git"
+    "url": "git+https://github.com/gustavoalves23/nativefier.git"
   },
   "bugs": {
     "url": "https://github.com/nativefier/nativefier/issues"
