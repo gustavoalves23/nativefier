@@ -91,21 +91,36 @@ function setDisplayMediaPromise(): void {
   }
   window.navigator.mediaDevices.getDisplayMedia = (): Promise<MediaStream> => {
     return new Promise((resolve, reject) => {
-      const sources = ipcRenderer.invoke(
-        'desktop-capturer-open-picker',
-      ) as Promise<Electron.DesktopCapturerSource>;
-      sources
-        .then(async (source) => {
-          if (!source) {
-            reject(new DOMException('Source not found', 'NotFoundError'));
-            return;
-          }
-          const stream = await getDisplayMedia(source.id);
-          resolve(stream);
-        })
-        .catch(() => {
-          reject(new DOMException('Not allowed', 'NotAllowedError'));
-        });
+      if (isWayland()) {
+        const sources = ipcRenderer.invoke(
+          'desktop-capturer-get-sources',
+        ) as Promise<Electron.DesktopCapturerSource[]>;
+        sources
+          .then(async (sources) => {
+            const stream = await getDisplayMedia(sources[0].id);
+            return resolve(stream);
+          })
+          // eslint-disable-next-line no-console
+          .catch(() => {
+            reject(new DOMException('Not allowed', 'NotAllowedError'));
+          });
+      } else {
+        const sources = ipcRenderer.invoke(
+          'desktop-capturer-open-picker',
+        ) as Promise<Electron.DesktopCapturerSource>;
+        sources
+          .then(async (source) => {
+            if (!source) {
+              reject(new DOMException('Source not found', 'NotFoundError'));
+              return;
+            }
+            const stream = await getDisplayMedia(source.id);
+            resolve(stream);
+          })
+          .catch(() => {
+            reject(new DOMException('Not allowed', 'NotAllowedError'));
+          });
+      }
     });
   };
 }
